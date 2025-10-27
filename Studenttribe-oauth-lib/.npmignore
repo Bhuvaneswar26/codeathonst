@@ -1,0 +1,20 @@
+# Source files
+src/
+tsconfig.json
+
+# Development files
+example.js
+*.log
+.DS_Store
+.vscode/
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# Node modules
+node_modules/
+
+# Build artifacts (keep dist/ for publishing)
+# dist/ is included by default in package.json files array

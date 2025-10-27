@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OAuth Sample App - Success</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        padding: 3rem;
+        max-width: 600px;
+        width: 90%;
+      }
+
+      .success-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .success-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+      }
+
+      .success-title {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #28a745;
+        margin-bottom: 0.5rem;
+      }
+
+      .success-subtitle {
+        color: #666;
+        font-size: 1.1rem;
+      }
+
+      .user-info {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .user-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        margin: 0 auto 1rem;
+        display: block;
+        border: 3px solid #e1e5e9;
+      }
+
+      .user-details {
+        text-align: center;
+      }
+
+      .user-name {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 0.5rem;
+      }
+
+      .user-email {
+        color: #666;
+        margin-bottom: 1rem;
+      }
+
+      .user-meta {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .meta-item {
+        text-align: center;
+        padding: 0.5rem;
+        background: white;
+        border-radius: 8px;
+      }
+
+      .meta-label {
+        font-size: 0.8rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .meta-value {
+        font-weight: bold;
+        color: #333;
+        margin-top: 0.25rem;
+      }
+
+      .actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-block;
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #5a6fd8;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: #6c757d;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+      }
+
+      .btn-danger {
+        background: #dc3545;
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+      }
+
+      .loading {
+        display: none;
+        text-align: center;
+        margin-top: 1rem;
+      }
+
+      .spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #667eea;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .error {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="success-header">
+        <div class="success-icon">✅</div>
+        <h1 class="success-title">Authentication Successful!</h1>
+        <p class="success-subtitle">
+          You have successfully logged in using OAuth
+        </p>
+      </div>
+
+      <div id="user-info" class="user-info" style="display: none">
+        <img id="user-avatar" class="user-avatar" src="" alt="User Avatar" />
+        <div class="user-details">
+          <h2 id="user-name" class="user-name"></h2>
+          <p id="user-email" class="user-email"></p>
+
+          <div class="user-meta">
+            <div class="meta-item">
+              <div class="meta-label">Provider</div>
+              <div id="user-provider" class="meta-value"></div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">User ID</div>
+              <div id="user-id" class="meta-value"></div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Verified</div>
+              <div id="user-verified" class="meta-value"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="error" class="error" style="display: none">
+        <p>Failed to load user information. Please try logging in again.</p>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" onclick="refreshUserInfo()">
+          Refresh Info
+        </button>
+        <a href="/" class="btn btn-secondary">Login with Different Provider</a>
+        <button class="btn btn-danger" onclick="logout()">Logout</button>
+      </div>
+
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+      </div>
+    </div>
+
+    <script>
+      let userData = null;
+
+      // Load user information on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        loadUserInfo();
+      });
+
+      async function loadUserInfo() {
+        showLoading(true);
+        hideError();
+
+        try {
+          const response = await fetch("/api/user");
+          if (!response.ok) {
+            throw new Error("Failed to fetch user data");
+          }
+
+          userData = await response.json();
+          displayUserInfo(userData);
+        } catch (error) {
+          console.error("Error loading user info:", error);
+          showError();
+        } finally {
+          showLoading(false);
+        }
+      }
+
+      function displayUserInfo(user) {
+        const userInfoDiv = document.getElementById("user-info");
+        const userName = document.getElementById("user-name");
+        const userEmail = document.getElementById("user-email");
+        const userAvatar = document.getElementById("user-avatar");
+        const userProvider = document.getElementById("user-provider");
+        const userId = document.getElementById("user-id");
+        const userVerified = document.getElementById("user-verified");
+
+        // Set user information
+        userName.textContent = user.name || "Unknown User";
+        userEmail.textContent = user.email || "No email provided";
+        userProvider.textContent = user.provider || "Unknown";
+        userId.textContent = user.id || "Unknown";
+        userVerified.textContent = user.verified ? "Yes" : "No";
+
+        // Set avatar if available
+        if (user.avatarUrl) {
+          userAvatar.src = user.avatarUrl;
+          userAvatar.alt = `${user.name}'s avatar`;
+        } else {
+          userAvatar.style.display = "none";
+        }
+
+        userInfoDiv.style.display = "block";
+      }
+
+      function showError() {
+        document.getElementById("error").style.display = "block";
+        document.getElementById("user-info").style.display = "none";
+      }
+
+      function hideError() {
+        document.getElementById("error").style.display = "none";
+      }
+
+      function showLoading(show) {
+        document.getElementById("loading").style.display = show
+          ? "block"
+          : "none";
+      }
+
+      async function refreshUserInfo() {
+        await loadUserInfo();
+      }
+
+      async function logout() {
+        showLoading(true);
+
+        try {
+          const response = await fetch("/logout", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (response.ok) {
+            // Redirect to home page after successful logout
+            window.location.href = "/";
+          } else {
+            throw new Error("Logout failed");
+          }
+        } catch (error) {
+          console.error("Error during logout:", error);
+          alert("Logout failed. Please try again.");
+        } finally {
+          showLoading(false);
+        }
+      }
+    </script>
+  </body>
+</html>

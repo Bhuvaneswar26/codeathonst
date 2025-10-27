@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OAuth Sample App - Login</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        padding: 3rem;
+        max-width: 500px;
+        width: 90%;
+        text-align: center;
+      }
+
+      .logo {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 0.5rem;
+      }
+
+      .subtitle {
+        color: #666;
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+      }
+
+      .providers {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .provider-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        border: 2px solid #e1e5e9;
+        border-radius: 12px;
+        text-decoration: none;
+        color: #333;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        background: white;
+      }
+
+      .provider-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border-color: #667eea;
+      }
+
+      .provider-btn.google {
+        border-color: #db4437;
+        color: #db4437;
+      }
+
+      .provider-btn.github {
+        border-color: #333;
+        color: #333;
+      }
+
+      .provider-btn.facebook {
+        border-color: #4267b2;
+        color: #4267b2;
+      }
+
+      .provider-btn.linkedin {
+        border-color: #0077b5;
+        color: #0077b5;
+      }
+
+      .provider-btn.twitter {
+        border-color: #1da1f2;
+        color: #1da1f2;
+      }
+
+      .provider-btn.instagram {
+        border-color: #e4405f;
+        color: #e4405f;
+      }
+
+      .provider-btn.reddit {
+        border-color: #ff4500;
+        color: #ff4500;
+      }
+
+      .provider-icon {
+        margin-right: 0.5rem;
+        font-size: 1.2rem;
+      }
+
+      .info {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 2rem;
+        font-size: 0.9rem;
+        color: #666;
+      }
+
+      .health-check {
+        margin-top: 1rem;
+      }
+
+      .health-check a {
+        color: #667eea;
+        text-decoration: none;
+      }
+
+      .health-check a:hover {
+        text-decoration: underline;
+      }
+
+      .loading {
+        display: none;
+        margin-top: 1rem;
+      }
+
+      .spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #667eea;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="logo">🔐 OAuth Demo</div>
+      <p class="subtitle">Choose your preferred login method</p>
+
+      <div class="providers">
+        <a
+          href="/auth/google"
+          class="provider-btn google"
+          onclick="showLoading()"
+        >
+          <span class="provider-icon">🔍</span>
+          Google
+        </a>
+
+        <a
+          href="/auth/github"
+          class="provider-btn github"
+          onclick="showLoading()"
+        >
+          <span class="provider-icon">🐙</span>
+          GitHub
+        </a>
+
+        <a
+          href="/auth/facebook"
+          class="provider-btn facebook"
+          onclick="showLoading()"
+        >
+          <span class="provider-icon">📘</span>
+          Facebook
+        </a>
+
+        <a
+          href="/auth/linkedin"
+          class="provider-btn linkedin"
+          onclick="showLoading()"
+        >
+          <span class="provider-icon">💼</span>
+          LinkedIn
+        </a>
+
+        <a
+          href="/auth/twitter"
+          class="provider-btn twitter"
+          onclick="showLoading()"
+        >
+          <span class="provider-icon">🐦</span>
+          Twitter
+        </a>
+
+        <a
+          href="/auth/instagram"
+          class="provider-btn instagram"
+          onclick="showLoading()"
+        >
+          <span class="provider-icon">📷</span>
+          Instagram
+        </a>
+
+        <a
+          href="/auth/reddit"
+          class="provider-btn reddit"
+          onclick="showLoading()"
+        >
+          <span class="provider-icon">🤖</span>
+          Reddit
+        </a>
+      </div>
+
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Redirecting to OAuth provider...</p>
+      </div>
+
+      <div class="info">
+        <p>
+          <strong>Note:</strong> This is a demo application. Make sure to
+          configure your OAuth credentials in the .env file.
+        </p>
+        <div class="health-check">
+          <a href="/health" target="_blank"
+            >Check server health and configured providers</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function showLoading() {
+        document.getElementById("loading").style.display = "block";
+      }
+
+      // Check if user is already logged in
+      fetch("/api/user")
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error("Not authenticated");
+        })
+        .then((user) => {
+          // User is already logged in, redirect to success page
+          window.location.href = "/success";
+        })
+        .catch((error) => {
+          // User is not logged in, show login page
+          console.log("User not authenticated");
+        });
+    </script>
+  </body>
+</html>

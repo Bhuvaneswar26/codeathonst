@@ -1,0 +1,50 @@
+{
+  "name": "studenttribe-oauth-lib",
+  "version": "1.0.0",
+  "description": "A unified OAuth library supporting Google, Facebook, LinkedIn, Twitter, Instagram, Reddit, and GitHub",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "keywords": [
+    "oauth",
+    "authentication",
+    "google",
+    "facebook",
+    "linkedin",
+    "twitter",
+    "instagram",
+    "reddit",
+    "github",
+    "typescript"
+  ],
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/unified-oauth-lib.git"
+  },
+  "homepage": "https://github.com/yourusername/unified-oauth-lib#readme",
+  "bugs": {
+    "url": "https://github.com/yourusername/unified-oauth-lib/issues"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "npm run build -- --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
